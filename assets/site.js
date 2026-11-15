@@ -22,3 +22,27 @@ document.querySelectorAll('[role="tablist"]').forEach(function (list) {
   tabs.forEach(function (t) { t.addEventListener('click', function () { show(t); }); });
   show(list.querySelector('[aria-selected="true"]') || tabs[0]);
 });
+
+// Galleries: a picture opens large on the same page; arrows or swipe move to the next one.
+(function () {
+  var shots = Array.prototype.slice.call(document.querySelectorAll('.gallery .shot'));
+  if (!shots.length || !window.HTMLDialogElement) return;
+  var d = document.createElement('dialog'); d.className = 'viewer'; d.setAttribute('aria-label', 'Picture viewer');
+  d.innerHTML = '<figure><img alt=""></figure><div class="cap"></div><button class="x" aria-label="Close">×</button><button class="prev" aria-label="Previous picture">‹</button><button class="next" aria-label="Next picture">›</button>';
+  document.body.appendChild(d);
+  var img = d.querySelector('img'), cap = d.querySelector('.cap'), i = 0, x0 = null;
+  function show(n) {
+    i = (n + shots.length) % shots.length;
+    img.src = shots[i].href; img.alt = shots[i].querySelector('img').alt;
+    cap.textContent = shots[i].dataset.title + '  ·  ' + (i + 1) + ' / ' + shots.length;
+  }
+  shots.forEach(function (a, n) { a.addEventListener('click', function (e) { e.preventDefault(); show(n); d.showModal(); }); });
+  d.querySelector('.x').addEventListener('click', function () { d.close(); });
+  d.querySelector('.prev').addEventListener('click', function () { show(i - 1); });
+  d.querySelector('.next').addEventListener('click', function () { show(i + 1); });
+  d.addEventListener('click', function (e) { if (e.target === d || e.target.tagName === 'FIGURE') d.close(); });
+  d.addEventListener('keydown', function (e) { if (e.key === 'ArrowLeft') show(i - 1); if (e.key === 'ArrowRight') show(i + 1); });
+  d.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  d.addEventListener('touchend', function (e) { if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 50) show(i + (dx < 0 ? 1 : -1)); });
+  d.addEventListener('close', function () { img.removeAttribute('src'); shots[i].focus(); });
+})();
