@@ -260,3 +260,34 @@ a.card:hover { border-color: var(--gold-deep); }
   #am-zin, #am-zout, #am-still, .am-sep { display: none; }
   #am-list { order: -1; }
 }
+
+/* comic reader (Art › Comic) */
+.cr-page { overflow-x: hidden; }
+.cr-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 8px 16px; padding-top: 14px; padding-bottom: 8px; }
+.cr-head h1 { margin: 0; font-size: clamp(1.5rem, 3.6vw, 2.1rem); line-height: 1.15; }
+.cr-credit { margin: 3px 0 0; color: var(--muted); font-size: .93rem; }
+.cr-bar { display: flex; gap: 10px; align-items: center; }
+.cr-chip { color: var(--text); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 13px; font-size: .88rem; }
+.cr-chip:hover { border-color: var(--gold); color: var(--gold); }
+.cr-count { color: var(--gold); font-variant-numeric: tabular-nums; min-width: 4.5em; text-align: right; }
+.cr-stage { position: relative; height: 70vh; display: flex; align-items: center; justify-content: center; user-select: none; -webkit-user-select: none;
+  background: radial-gradient(ellipse 70% 60% at 50% 50%, #1a1712 0%, #121110 60%, #0b0a09 100%); }
+.cr-book { position: relative; height: 100%; width: 100%; display: flex; align-items: center; justify-content: center; padding: 10px 64px; box-sizing: border-box; cursor: pointer; touch-action: pan-y; }
+.cr-pg { display: none; height: 100%; max-width: 100%; }
+.cr-pg.on { display: flex; align-items: center; }
+.cr-pg .pair { display: inline-block; line-height: 0; height: 100%; max-width: 100%; }
+.cr-pg .pair img.clean { height: 100%; width: auto; max-width: 100%; object-fit: contain; border-radius: 4px; box-shadow: 0 10px 40px rgba(0,0,0,.6); }
+.cr-pg.left .pair img.clean { border-radius: 4px 0 0 4px; }
+.cr-pg.right .pair img.clean { border-radius: 0 4px 4px 0; }
+.cr-pg.left { justify-content: flex-end; } .cr-pg.right { justify-content: flex-start; }
+.cr-pg.left, .cr-pg.right { max-width: 50%; }
+.cr-nav { position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; background: rgba(18,17,16,.7); border: 1px solid var(--line); color: var(--text); width: 46px; height: 46px; border-radius: 50%; font-size: 24px; cursor: pointer; }
+.cr-nav:hover { border-color: var(--gold); color: var(--gold); }
+.cr-prev { left: 10px; } .cr-next { right: 10px; }
+.cr-hint { color: var(--muted); font-size: .82rem; margin: 6px auto 0; text-align: center; }
+@media (max-width: 600px) {
+  .cr-book { padding: 6px 4px; }
+  .cr-nav { top: auto; bottom: 8px; transform: none; width: 40px; height: 40px; }
+  .cr-head p { font-size: .85rem; }
+  .cr-hint { display: none; }
+}

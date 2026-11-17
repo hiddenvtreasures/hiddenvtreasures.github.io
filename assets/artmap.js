@@ -27,7 +27,7 @@
   var R = 34, nodes = [], links = [], byId = {};
   function add(n) { nodes.push(n); byId[n.id] = n; n.vx = 0; n.vy = 0; n.ph = rnd() * 6.28; return n; }
   var main = add({ id: 'Art', kind: 'main', r: 42 }); main.x = 0; main.y = 0; main.fixed = true;
-  var ANG = { 'Crafts': -2.0, 'Drawings': -0.1, 'Tattoo designs': 1.9 };
+  var ANG = { 'Crafts': -2.0, 'Drawings': -0.1, 'Tattoo designs': 1.6, 'Comic': 2.85 };
   var secs = []; ART.forEach(function (a) { if (secs.indexOf(a.section) < 0) secs.push(a.section); });
   secs.forEach(function (s, k) { var n = add({ id: s, kind: 'sec', r: 18, label: s, section: s, ang: ANG[s] !== undefined ? ANG[s] : k * 2.1 }); n.x = Math.cos(n.ang) * 230; n.y = Math.sin(n.ang) * 230; links.push({ a: main, b: n, len: 230 }); });
   ART.forEach(function (a, i) {
@@ -195,10 +195,11 @@
   // ---------- picture viewer and list view ----------
   var viewer = document.getElementById('am-viewer'), listview = document.getElementById('am-listview');
   var cleanImg = document.getElementById('am-clean'), wmImg = document.getElementById('am-wm'), cur = 0, openedAt = 0;
-  function order() { return ART.map(function (a, i) { return i; }).filter(function (i) { return filter === 'all' || ART[i].section === filter; }); }
+  function order() { return ART.map(function (a, i) { return i; }).filter(function (i) { return !ART[i].href && (filter === 'all' || ART[i].section === filter); }); }
   function show(o) { o.classList.add('open'); overlayOpen = true; openedAt = performance.now(); setHover(null); document.documentElement.classList.add('am-lock'); var c = o.querySelector('.am-close'); if (c) c.focus({ preventScroll: true }); }
   function hide() { viewer.classList.remove('open'); listview.classList.remove('open'); overlayOpen = false; document.documentElement.classList.remove('am-lock'); }
   function openPic(i) {
+    if (ART[i].href) { location.href = ART[i].href; return; }
     cur = i; var a = ART[i];
     cleanImg.src = large(a); wmImg.src = marked(a); cleanImg.alt = a.title; wmImg.alt = a.title;
     document.getElementById('am-vt').textContent = a.title;
