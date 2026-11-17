@@ -175,3 +175,24 @@ a.card:hover { border-color: var(--gold-deep); }
 .viewer button:hover, .viewer button:focus-visible { border-color: var(--gold); color: var(--gold); }
 .viewer .x { top: 12px; right: 12px; } .viewer .prev { left: 10px; top: 50%; margin-top: -23px; } .viewer .next { right: 10px; top: 50%; margin-top: -23px; }
 @media (max-width: 600px) { .viewer figure { padding: 60px 8px 6px; } .viewer .prev, .viewer .next { top: auto; bottom: 64px; } }
+
+/* music: song cards, version buttons, player, lyrics */
+.tiles { grid-template-columns: repeat(5, 1fr); }
+@media (max-width: 1060px) { .tiles { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 860px) { .tiles { grid-template-columns: 1fr 1fr; } .tiles .tile:last-child:nth-child(odd) { grid-column: span 2; } }
+.songs { display: grid; gap: 18px; margin: 8px 0 26px; }
+.song { display: grid; grid-template-columns: 200px 1fr; gap: 20px; padding: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.song .cover { width: 200px; height: 200px; object-fit: cover; border-radius: 12px; display: block; }
+.song h2 { margin: 2px 0 4px; font-size: 1.6rem; }
+.song-line { margin: 0 0 12px; color: var(--muted); }
+.takes { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 12px; }
+.take { font: inherit; font-size: .92rem; color: var(--text); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.take span { color: var(--muted); margin-left: 4px; }
+.take[aria-pressed="true"] { border-color: var(--gold); color: var(--gold); }
+.take:hover { border-color: var(--gold); }
+.song audio { width: 100%; max-width: 560px; display: block; color-scheme: dark; }
+.lyrics { margin-top: 14px; }
+.lyrics summary { cursor: pointer; color: var(--gold); }
+.lyrics p { margin: 12px 0 0; line-height: 1.55; color: var(--text); }
+.music-note { color: var(--muted); font-size: .9rem; margin: 0 0 30px; }
+@media (max-width: 640px) { .song { grid-template-columns: 1fr; } .song .cover { width: 100%; height: auto; aspect-ratio: 1; } }

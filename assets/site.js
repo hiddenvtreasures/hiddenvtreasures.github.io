@@ -46,3 +46,20 @@ document.querySelectorAll('[role="tablist"]').forEach(function (list) {
   d.addEventListener('touchend', function (e) { if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 50) show(i + (dx < 0 ? 1 : -1)); });
   d.addEventListener('close', function () { img.removeAttribute('src'); shots[i].focus(); });
 })();
+
+/* music: switch versions, one song plays at a time */
+document.querySelectorAll('.song').forEach(function (card) {
+  var audio = card.querySelector('audio'), cover = card.querySelector('.cover');
+  card.querySelectorAll('.take').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var playing = !audio.paused;
+      card.querySelectorAll('.take').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      audio.src = b.dataset.src; cover.src = b.dataset.cover;
+      if (playing) audio.play();
+    });
+  });
+  audio.addEventListener('play', function () {
+    document.querySelectorAll('.song audio').forEach(function (o) { if (o !== audio) o.pause(); });
+  });
+  audio.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+});
