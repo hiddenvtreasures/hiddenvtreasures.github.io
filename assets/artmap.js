@@ -68,6 +68,7 @@
       el('image', { href: small(n.art), x: -R, y: -R, width: 2 * R, height: 2 * R, preserveAspectRatio: 'xMidYMid slice', 'clip-path': 'url(#am-clip)' }, g);
       el('circle', { r: R, 'class': 'am-ring' }, g);
       el('circle', { r: R + 1.5, 'class': 'am-rim' }, g);
+      if (n.art.video) { el('circle', { r: R * 0.42, 'class': 'am-play' }, g); el('path', { d: 'M' + (-R * 0.13) + ' ' + (-R * 0.2) + ' L' + (R * 0.22) + ' 0 L' + (-R * 0.13) + ' ' + (R * 0.2) + ' Z', 'class': 'am-play-i' }, g); }
     } else if (n.kind === 'main') {
       el('circle', { r: n.r * 2.4, 'class': 'am-halo' }, g);
       el('image', { href: '/assets/mark-v.svg', x: -n.r * 1.7, y: -n.r * 1.75, width: n.r * 3.4, height: n.r * 3.4 }, g);
@@ -195,12 +196,17 @@
   // ---------- picture viewer and list view ----------
   var viewer = document.getElementById('am-viewer'), listview = document.getElementById('am-listview');
   var cleanImg = document.getElementById('am-clean'), wmImg = document.getElementById('am-wm'), cur = 0, openedAt = 0;
+  var frame = viewer.querySelector('.am-frame'), vid = document.createElement('video');
+  vid.className = 'am-video'; vid.controls = true; vid.playsInline = true; vid.preload = 'metadata'; vid.setAttribute('controlslist', 'nodownload'); vid.hidden = true;
+  frame.parentNode.insertBefore(vid, frame.nextSibling);
   function order() { return ART.map(function (a, i) { return i; }).filter(function (i) { return !ART[i].href && (filter === 'all' || ART[i].section === filter); }); }
   function show(o) { o.classList.add('open'); overlayOpen = true; openedAt = performance.now(); setHover(null); document.documentElement.classList.add('am-lock'); var c = o.querySelector('.am-close'); if (c) c.focus({ preventScroll: true }); }
-  function hide() { viewer.classList.remove('open'); listview.classList.remove('open'); overlayOpen = false; document.documentElement.classList.remove('am-lock'); }
+  function hide() { vid.pause(); viewer.classList.remove('open'); listview.classList.remove('open'); overlayOpen = false; document.documentElement.classList.remove('am-lock'); }
   function openPic(i) {
     if (ART[i].href) { location.href = ART[i].href; return; }
     cur = i; var a = ART[i];
+    vid.pause(); vid.hidden = !a.video; frame.hidden = !!a.video;
+    if (a.video) { vid.poster = large(a); vid.src = a.video; vid.setAttribute('aria-label', a.title); } else { vid.removeAttribute('src'); vid.load(); }
     cleanImg.src = large(a); wmImg.src = marked(a); cleanImg.alt = a.title; wmImg.alt = a.title;
     document.getElementById('am-vt').textContent = a.title;
     document.getElementById('am-vs').textContent = a.section + (a.group !== a.section ? ' · ' + a.group : '');
@@ -217,7 +223,7 @@
     if (viewer.classList.contains('open')) { if (e.key === 'ArrowLeft') step(-1); if (e.key === 'ArrowRight') step(1); }
   });
   var tx = null;
-  viewer.addEventListener('touchstart', function (e) { tx = e.touches[0].clientX; }, { passive: true });
+  viewer.addEventListener('touchstart', function (e) { tx = e.target === vid ? null : e.touches[0].clientX; }, { passive: true });
   viewer.addEventListener('touchend', function (e) { if (tx === null) return; var d = e.changedTouches[0].clientX - tx; tx = null; if (Math.abs(d) > 50) step(d < 0 ? 1 : -1); });
   document.getElementById('am-list').onclick = function () { show(listview); };
 

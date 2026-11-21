@@ -39,11 +39,16 @@ document.querySelectorAll('.gallery .shot img, .art-tile img').forEach(function 
   var shots = Array.prototype.slice.call(document.querySelectorAll('.gallery .shot'));
   if (!shots.length || !window.HTMLDialogElement) return;
   var d = document.createElement('dialog'); d.className = 'viewer'; d.setAttribute('aria-label', 'Picture viewer');
-  d.innerHTML = '<figure><div class="pair"><img class="clean" alt=""><img class="wmcopy" alt=""></div></figure><div class="cap"></div><button class="x" aria-label="Close">×</button><button class="prev" aria-label="Previous picture">‹</button><button class="next" aria-label="Next picture">›</button>';
+  d.innerHTML = '<figure><div class="pair"><img class="clean" alt=""><img class="wmcopy" alt=""></div><video controls playsinline preload="metadata" controlslist="nodownload" hidden></video></figure><div class="cap"></div><button class="x" aria-label="Close">×</button><button class="prev" aria-label="Previous picture">‹</button><button class="next" aria-label="Next picture">›</button>';
   document.body.appendChild(d);
   var img = d.querySelector('img.wmcopy'), cleanImg = d.querySelector('img.clean'), cap = d.querySelector('.cap'), i = 0, x0 = null;
+  var vid = d.querySelector('video'), pairBox = d.querySelector('figure .pair');
   function show(n) {
     i = (n + shots.length) % shots.length;
+    var v = shots[i].dataset.video;
+    vid.pause(); vid.hidden = !v; pairBox.hidden = !!v;
+    if (v) { vid.poster = cleanOf(shots[i].href); vid.src = v; vid.setAttribute('aria-label', shots[i].dataset.title); }
+    else { vid.removeAttribute('src'); vid.load(); }
     img.src = shots[i].href; cleanImg.src = cleanOf(shots[i].href); img.alt = cleanImg.alt = shots[i].querySelector('img').alt;
     cap.textContent = shots[i].dataset.title + '  ·  ' + (i + 1) + ' / ' + shots.length;
   }
@@ -53,9 +58,9 @@ document.querySelectorAll('.gallery .shot img, .art-tile img').forEach(function 
   d.querySelector('.next').addEventListener('click', function () { show(i + 1); });
   d.addEventListener('click', function (e) { if (e.target === d || e.target.tagName === 'FIGURE') d.close(); });
   d.addEventListener('keydown', function (e) { if (e.key === 'ArrowLeft') show(i - 1); if (e.key === 'ArrowRight') show(i + 1); });
-  d.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  d.addEventListener('touchstart', function (e) { x0 = e.target === vid ? null : e.touches[0].clientX; }, { passive: true });
   d.addEventListener('touchend', function (e) { if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 50) show(i + (dx < 0 ? 1 : -1)); });
-  d.addEventListener('close', function () { img.removeAttribute('src'); cleanImg.removeAttribute('src'); shots[i].focus(); });
+  d.addEventListener('close', function () { vid.pause(); vid.removeAttribute('src'); vid.load(); img.removeAttribute('src'); cleanImg.removeAttribute('src'); shots[i].focus(); });
 })();
 
 /* music: switch versions, one song plays at a time */

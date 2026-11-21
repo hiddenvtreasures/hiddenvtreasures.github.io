@@ -291,3 +291,12 @@ a.card:hover { border-color: var(--gold-deep); }
   .cr-head p { font-size: .85rem; }
   .cr-hint { display: none; }
 }
+
+/* art: videos in galleries and in the tree viewer */
+.shot.vid { position: relative; }
+.shot.vid::after { content: "▶"; position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%); width: 54px; height: 54px; display: grid; place-items: center; padding-left: 4px; box-sizing: border-box; border-radius: 50%; background: rgba(18,17,16,.72); border: 1px solid var(--gold); color: var(--gold); font-size: 1.3rem; pointer-events: none; }
+.viewer video { max-width: 100%; max-height: calc(100vh - 92px); border-radius: 8px; background: #000; }
+.viewer [hidden], .am-overlay [hidden] { display: none !important; }
+.am-video { max-width: min(88vw, 1600px); max-height: 76vh; border-radius: 8px; background: #000; }
+.am-play { fill: rgba(18,17,16,.7); stroke: var(--gold); stroke-width: 1; pointer-events: none; }
+.am-play-i { fill: var(--gold); pointer-events: none; }
